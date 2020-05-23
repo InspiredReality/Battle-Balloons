@@ -23,6 +23,7 @@ SETUP Phase -
 5. 2x click one balloon/Blink on each player's cluster to move to PLAY phase 
 
 PLAY Phase - 
+
 6. Players take turns clicking their opponent's balloons until they pop
   a) Balloons are dark when popped
   b) Balloon health is shown by face counters 
