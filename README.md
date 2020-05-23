@@ -32,12 +32,14 @@ PLAY Phase -
 8. 3x click a Blink in each cluster to return to SETUP phase
   
 ::Strategy::
+
 It might seem obvious to always select a Red balloon as your king since they take the longest to pop.  Your opponent knows this too so they may start clicking the Red balloon first.  If I know you think I should select a Red king, then selecting a Blue as king could make you waste 3-6 clicks popping a non-king Red balloon.  Let the game theory begin!
 
 ::Balloon Popping::
+
 Balloons "pop" after X clicks that are equally likely to be randomly selected.  For example, there's a 25% chance a Red balloon pops after 5 clicks and a 50% chance a Blue balloon pops after 2 clicks.
   Red/Large 3, 4, 5, or 6 
   Blue/Medium 2, 3, or 4
   Green/Small 1 or 2
-  * I'm considering reducing the scale of this so less clicks are required to pop each balloon
+  /* I'm considering reducing the scale of this so less clicks are required to pop each balloon
   
