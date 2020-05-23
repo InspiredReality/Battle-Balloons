@@ -8,7 +8,9 @@ You are captain of a hot air balloon fleet, trying to pop your opponent's King B
 In English, the goal of the game is to pop the balloon/Blink your opponent designated as King before they pop the balloon/Blink you selected as your King.  Players take turns clicking their opponent's balloons to reduce balloon health and eventually pop them.
 
 ::Gameplay::
+
 SETUP Phase -
+
 1. Once all Blinks learn the game, divide balloons/Blinks evenly among 2 players
 2. Single click to cycle between Red/Large, Blue/Medium, Green/Small
   a) For even fair play, make sure each player has the same number of each color  
