@@ -19,6 +19,7 @@ SETUP Phase -
   a) Hide your selection from your opponent ;^) - this step is the strategic trickery
   b) King Balloon shows as yellow until PLAY phase
 5. 2x click one balloon/Blink on each player's cluster to move to PLAY phase 
+
 PLAY Phase - 
 6. Players take turns clicking their opponent's balloons until they pop
   a) Balloons are dark when popped
