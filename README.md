@@ -1,11 +1,11 @@
 # Battle-Balloons
 for 6+ Blinks 
-for 2+ players 
-  standard game is for 2 players because any more players could end up in ganging up on one unfortunate player
+</br>for 2+ players 
+</br>  standard game is for 2 players because any more players could end up in ganging up on one unfortunate player
 
 You are captain of a hot air balloon fleet, trying to pop your opponent's King Balloon to emerge from battle victorious.  Navigate the airs of random chance and rely on strategic trickery to pop before you yourself are popped.
 
-In English, the goal of the game is to pop the balloon/Blink your opponent designated as King before they pop the balloon/Blink you selected as your King.  Players take turns clicking their opponent's balloons to reduce balloon health and eventually pop them.
+More simply, the goal of the game is to pop the balloon/Blink your opponent designated as King before they pop the balloon/Blink you selected as your King.  Players take turns clicking their opponent's balloons to reduce balloon health and eventually pop them.
 
 ::Gameplay::
 </br>SETUP Phase -
