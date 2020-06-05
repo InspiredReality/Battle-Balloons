@@ -12,22 +12,22 @@ More simply, the goal of the game is to pop the balloon/Blink your opponent desi
 ## ::Gameplay::
 ### SETUP Phase -
 1. Once all Blinks learn the game, divide balloons/Blinks evenly among 2 players
-2. Single click to cycle between Red/Large, Blue/Medium, Green/Small
-  a) For even fair play, make sure each player has the same number of each color  
-  b) To give one player an advantage, allow them to have more larger balloons
+2. Single click to cycle between ![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+)Red/Large, ![#1589F0](https://via.placeholder.com/15/1589F0/000000?text=+)Blue/Medium, ![#c5f015](https://via.placeholder.com/15/c5f015/000000?text=+)Green/Small
+</br>a) For even fair play, make sure each player has the same number of each color  
+</br>b) To give one player an advantage, allow them to have more larger balloons
 3. Once you have your colors selected, 3x click (any multiclick) to randomize balloon health
-  a) At any point in the game restarts the game by going back to Setup Phase and re-randomizes balloon health
+  </br>a) At any point in the game restarts the game by going back to Setup Phase and re-randomizes balloon health
 4. Each player long presses one of their balloons/Blinks to set it as their King Balloon
-  a) Hide your selection from your opponent ;^) - this step is the strategic trickery
-  b) King Balloon shows as yellow until PLAY phase
+  </br>a) Hide your selection from your opponent ;^) - this step is the strategic trickery
+  </br>b) King Balloon shows as yellow until PLAY phase
 5. 2x click one balloon/Blink on each player's cluster to move to PLAY phase 
 
 ### PLAY Phase - 
 6. Players take turns clicking their opponent's balloons until they pop
-  a) Balloons are dark when popped
-  b) Balloon health is shown by face counters 
+  </br>a) Balloons are dark when popped
+  </br>b) Balloon health is shown by face counters 
 7. Player who pops their opponent's King Balloon wins!
-  a) Balloon/Blink turns white and others in cluster turn purple when King is popped
+  </br>a) Balloon/Blink turns white and others in cluster turn purple when King is popped
 8. 3x click a Blink in each cluster to return to SETUP phase
   
 ## ::Strategy::
