@@ -35,8 +35,8 @@ It might seem obvious to always select a Red balloon as your king since they tak
 
 ## ::Balloon Popping::
 Balloons "pop" after X clicks that are equally likely to be randomly selected.  For example, there's a 25% chance a Red balloon pops after 5 clicks and a 50% chance a Blue balloon pops after 2 clicks.
-  Red/Large 3, 4, 5, or 6 
-  Blue/Medium 2, 3, or 4
-  Green/Small 1 or 2
+  </br>![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+) Red/Large 3, 4, 5, or 6 
+  </br>![#1589F0](https://via.placeholder.com/15/1589F0/000000?text=+) Blue/Medium 2, 3, or 4
+  </br>![#c5f015](https://via.placeholder.com/15/c5f015/000000?text=+) Green/Small 1 or 2
   </br>* I'm considering reducing the scale of this so less clicks are required to pop each balloon
   
