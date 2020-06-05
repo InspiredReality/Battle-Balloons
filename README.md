@@ -9,8 +9,8 @@ You are captain of a hot air balloon fleet, trying to pop your opponent's King B
 
 More simply, the goal of the game is to pop the balloon/Blink your opponent designated as King before they pop the balloon/Blink you selected as your King.  Players take turns clicking their opponent's balloons to reduce balloon health and eventually pop them.
 
-::Gameplay::
-</br>SETUP Phase -
+## ::Gameplay::
+### </br>SETUP Phase -
 </br>1. Once all Blinks learn the game, divide balloons/Blinks evenly among 2 players
 2. Single click to cycle between Red/Large, Blue/Medium, Green/Small
   a) For even fair play, make sure each player has the same number of each color  
@@ -22,7 +22,7 @@ More simply, the goal of the game is to pop the balloon/Blink your opponent desi
   b) King Balloon shows as yellow until PLAY phase
 5. 2x click one balloon/Blink on each player's cluster to move to PLAY phase 
 
-PLAY Phase - 
+### PLAY Phase - 
 </br>6. Players take turns clicking their opponent's balloons until they pop
   a) Balloons are dark when popped
   b) Balloon health is shown by face counters 
@@ -30,10 +30,10 @@ PLAY Phase -
   a) Balloon/Blink turns white and others in cluster turn purple when King is popped
 8. 3x click a Blink in each cluster to return to SETUP phase
   
-::Strategy::
+## ::Strategy::
 </br>It might seem obvious to always select a Red balloon as your king since they take the longest to pop.  Your opponent knows this too so they may start clicking the Red balloon first.  If I know you think I should select a Red king, then selecting a Blue as king could make you waste 3-6 clicks popping a non-king Red balloon.  Let the game theory begin!
 
-::Balloon Popping::
+## ::Balloon Popping::
 </br>Balloons "pop" after X clicks that are equally likely to be randomly selected.  For example, there's a 25% chance a Red balloon pops after 5 clicks and a 50% chance a Blue balloon pops after 2 clicks.
   Red/Large 3, 4, 5, or 6 
   Blue/Medium 2, 3, or 4
