@@ -15,7 +15,7 @@ More simply, the goal of the game is to pop the balloon/Blink your opponent desi
 2. *Assign Colors*: **Single click** to cycle between ![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+)Red/Large, ![#1589F0](https://via.placeholder.com/15/1589F0/000000?text=+)Blue/Medium, ![#c5f015](https://via.placeholder.com/15/c5f015/000000?text=+)Green/Small
   </br> a) For even fair play, make sure each player has the same number of each color
   </br> b) To give one player an advantage, allow them to have more larger balloons
-3. *Reset Balloon Health*: Once you have your colors selected, **2x click** (any multiclick) to randomize balloon health
+3. *Reset Balloon Health*: Once you have your colors selected, **2x click** to randomize balloon health
   </br> a) At any point in the game, **2x click** restarts the game by going back to Setup Phase and re-randomizes balloon health
 4. *Select King*: Each player **long presses** one (or more if long pressed simultaneously) of their balloons/Blinks to set it as their King Balloon
   </br> a) Hide your selection from your opponent ;^) - this step is the strategic trickery
