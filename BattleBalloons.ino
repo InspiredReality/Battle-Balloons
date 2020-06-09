@@ -63,23 +63,11 @@ void loop() {
 }
 
 void inertLoop() {
-//  if ( buttonPressed() ) {
-//     //increment clickCount for single click even for semiPress
-//    if ( gamePhase == PLAY) {
-//      //increment clickCount 
-//      clickCount ++;
-//    }
-//  }
-  
   if ( buttonSingleClicked() ) {
     //only switch balloon color if in SETUP phase
     if ( gamePhase == SETUP){
       currentColorIndex = (currentColorIndex + 1) % 3;
     }
-//    if ( gamePhase == PLAY) {
-//      //increment clickCount 
-//      clickCount ++;
-//    }
   }
 
   //set myself to GO when 2x clicked to tell others to switch to SETUP
@@ -89,7 +77,7 @@ void inertLoop() {
       kingIsSelected = false;
       signalState = GO;
       gamePhase = SETUP;
-      randomizeClicksToKill(); 
+//      randomizeClicksToKill(); 
     }
 
   if ( buttonMultiClicked()){
@@ -98,24 +86,23 @@ void inertLoop() {
         //set game phase to PLAY
         gamePhase = PLAY;
         clickCount = 0;
-        signalState = GO;        
+        signalState = GO;
+        randomizeClicksToKill();
       }
     }
     
   if ( buttonLongPressed()){
-//      if ( gamePhase == PLAY) {
-//        //increment clickCount 
-//        clickCount ++;
-//      }
       if ( gamePhase == KINGSELECTED){
         isKing = true;
         signalState = GO;
+//        randomizeClicksToKill();
       }
       if ( gamePhase == SETUP){
         isKing = true;
         kingIsSelected = true;
         gamePhase = KINGSELECTED;
-        signalState = GO;        
+        signalState = GO;
+//        randomizeClicksToKill();
       }
    }
    
@@ -128,10 +115,11 @@ void inertLoop() {
         gamePhase = getGamePhase(getLastValueReceivedOnFace(f));
 
         if (gamePhase == SETUP){
-          randomizeClicksToKill();
+//          randomizeClicksToKill();
         }
         if (gamePhase == PLAY){
             clickCount = 0;
+            randomizeClicksToKill();
         }
         if (gamePhase == KINGSELECTED){
             isKing = false;
@@ -179,50 +167,53 @@ void displayFaceColor() {
   setColor(OFF);
     
   switch (signalState) {
-  case INERT:
-    switch (gamePhase) {
-      case SETUP:
-        FOREACH_FACE(f) {
-          if (f <= clicksToKill) {
-            setColorOnFace(dim(colors[currentColorIndex],clickDim),f);
-          }
-        }
-        break;
-      case PLAY:
-        FOREACH_FACE(f) {
-          if (f <= clicksToKill - clickCount) {
-            setColorOnFace(dim(colors[currentColorIndex],clickDim),f);
-          }
-        }
-        break;
-      case KINGSELECTED:
-        if ( isKing ){
-          setColor(YELLOW);
-        }
-        else {
+    case INERT:
+      switch (gamePhase) {
+        case SETUP:
+          displayHiddenBalloonHealth();
+          break;
+        case PLAY:
           FOREACH_FACE(f) {
-            if (f <= clicksToKill) {
+            if (f <= clicksToKill - clickCount) {
               setColorOnFace(dim(colors[currentColorIndex],clickDim),f);
             }
           }
-        }
-        break;
-      case KINGKILLED:
-        if ( isKing ){
-          setColor(WHITE);
-        }
-        else {
-          setColor(MAGENTA);
-        }
-        break;
-    }
-    break;
-  case GO:
-    setColor(MAGENTA);
-    break;
-  case RESOLVE:
-    setColor(WHITE);
-    break;
+          break;
+        case KINGSELECTED:
+          if ( isKing ){
+            setColorOnFace(YELLOW, 0);
+            setColorOnFace(ORANGE, 1);
+            setColorOnFace(YELLOW, 2);
+            setColorOnFace(ORANGE, 3);
+            setColorOnFace(YELLOW, 4);
+            setColorOnFace(ORANGE, 5);
+  //          setColor(YELLOW);
+          }
+          else {
+            displayHiddenBalloonHealth();
+          }
+          break;
+        case KINGKILLED:
+          if ( isKing ){
+            setColorOnFace(YELLOW, 0);
+            setColorOnFace(WHITE, 1);
+            setColorOnFace(YELLOW, 2);
+            setColorOnFace(WHITE, 3);
+            setColorOnFace(YELLOW, 4);
+            setColorOnFace(WHITE, 5);
+          }
+          else {
+            setColor(MAGENTA);
+          }
+          break;
+      }
+      break;
+    case GO:
+      setColor(MAGENTA);
+      break;
+    case RESOLVE:
+      setColor(WHITE);
+      break;
   }
 }
 
@@ -237,6 +228,24 @@ void randomizeClicksToKill(){
       break;
     case 2:
       clicksToKill = random( 1 );
+      break;
+  }
+}
+
+void displayHiddenBalloonHealth(){
+    switch(currentColorIndex) {
+    case 0:
+      setColor(colors[0]);
+      break;
+    case 1:
+      setColorOnFace(colors[1],0);
+      setColorOnFace(colors[1],1);
+      setColorOnFace(colors[1],2);
+      setColorOnFace(colors[1],3);
+      break;
+    case 2:
+      setColorOnFace(colors[2],4);
+      setColorOnFace(colors[2],5);
       break;
   }
 }
