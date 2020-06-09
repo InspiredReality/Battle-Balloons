@@ -9,9 +9,9 @@ bool isKing = false;
 bool kingIsSelected = false;
 byte clicksToKill = 3;
 byte clickCount = 0;
-//byte redClicksToKill;
-//byte blueClicksToKill;
-//byte greenClicksToKill;
+//timer 
+Timer balloonPopped;
+#define POPPING_DURATION 2000
 
 void setup() {
   // put your setup code here, to run once:
@@ -24,6 +24,10 @@ void loop() {
   }
   if ( buttonReleased() ){
     clickDim = 255;    
+    if ( gamePhase == PLAY) {
+      //increment clickCount 
+      clickCount ++;
+    }
   }
 
 //this constantly fires since it's in main loop
@@ -31,7 +35,15 @@ void loop() {
     signalState = GO;  
     gamePhase = KINGKILLED;
   }
-  
+//  if ( gamePhase == PLAY && clicksToKill < clickCount){
+//    //run timer & balloon pop display
+//    balloonPopped.set(POPPING_DURATION);
+//    //if this is king that popped then also send that info and end round
+//    if ( isKing )
+//      signalState = GO;  
+//      gamePhase = KINGKILLED;
+//  }
+//  
   switch (signalState) {
     case INERT:
       inertLoop();
@@ -51,15 +63,23 @@ void loop() {
 }
 
 void inertLoop() {
+//  if ( buttonPressed() ) {
+//     //increment clickCount for single click even for semiPress
+//    if ( gamePhase == PLAY) {
+//      //increment clickCount 
+//      clickCount ++;
+//    }
+//  }
+  
   if ( buttonSingleClicked() ) {
     //only switch balloon color if in SETUP phase
     if ( gamePhase == SETUP){
       currentColorIndex = (currentColorIndex + 1) % 3;
     }
-    if ( gamePhase == PLAY) {
-      //increment clickCount 
-      clickCount ++;
-    }
+//    if ( gamePhase == PLAY) {
+//      //increment clickCount 
+//      clickCount ++;
+//    }
   }
 
   //set myself to GO when 2x clicked to tell others to switch to SETUP
@@ -72,11 +92,7 @@ void inertLoop() {
       randomizeClicksToKill(); 
     }
 
-  if ( buttonMultiClicked){
-      if ( gamePhase == PLAY) {
-        //increment clickCount 
-        clickCount ++;
-      }
+  if ( buttonMultiClicked()){
   //set myself to GO when 3x clicked to tell others to switch to PLAY game phase
       if ( gamePhase == KINGSELECTED){
         //set game phase to PLAY
@@ -87,10 +103,10 @@ void inertLoop() {
     }
     
   if ( buttonLongPressed()){
-      if ( gamePhase == PLAY) {
-        //increment clickCount 
-        clickCount ++;
-      }
+//      if ( gamePhase == PLAY) {
+//        //increment clickCount 
+//        clickCount ++;
+//      }
       if ( gamePhase == KINGSELECTED){
         isKing = true;
         signalState = GO;
@@ -225,6 +241,10 @@ void randomizeClicksToKill(){
   }
 }
 
+//byte getGameMode(byte data) {
+//    return (data >> 2) & 7;//1st, 2nd, 3rd, and 4th bits
+//}
+
 byte getGamePhase(byte data) {
     return (data & 3);//returns bits E and F
 }
@@ -232,3 +252,4 @@ byte getGamePhase(byte data) {
 byte getSignalState(byte data) {
     return ((data >> 2) & 3);//returns bits C and D
 }
+
