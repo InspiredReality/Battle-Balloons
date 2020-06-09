@@ -62,12 +62,22 @@ void inertLoop() {
     }
   }
 
-  if ( buttonDoubleClicked()){
+  //set myself to GO when 2x clicked to tell others to switch to SETUP
+  //reset King Selection & re-randomize
+  if (buttonDoubleClicked()){
+      isKing = false;
+      kingIsSelected = false;
+      signalState = GO;
+      gamePhase = SETUP;
+      randomizeClicksToKill(); 
+    }
+
+  if ( buttonMultiClicked){
       if ( gamePhase == PLAY) {
         //increment clickCount 
         clickCount ++;
       }
-  //set myself to GO when 2x clicked to tell others to switch to PLAY game phase
+  //set myself to GO when 3x clicked to tell others to switch to PLAY game phase
       if ( gamePhase == KINGSELECTED){
         //set game phase to PLAY
         gamePhase = PLAY;
@@ -76,16 +86,6 @@ void inertLoop() {
       }
     }
     
-  //set myself to GO when 3x clicked to tell others to switch to SETUP
-  //reset King Selection & re-randomize
-  if (buttonMultiClicked()){
-      isKing = false;
-      kingIsSelected = false;
-      signalState = GO;
-      gamePhase = SETUP;
-      randomizeClicksToKill(); 
-    }
-
   if ( buttonLongPressed()){
       if ( gamePhase == PLAY) {
         //increment clickCount 
