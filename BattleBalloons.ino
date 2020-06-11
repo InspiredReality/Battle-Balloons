@@ -7,14 +7,24 @@ byte currentColorIndex = 0;
 byte clickDim = 255;
 bool isKing = false;
 bool kingIsSelected = false;
+bool kingIsKilled = false;
 byte clicksToKill = 3;
 byte clickCount = 0;
-//timer 
-Timer balloonPopped;
-#define POPPING_DURATION 2000
+//timers
+Timer balloonPoppedTimer;
+#define POPPING_DURATION 3500
+bool isPopping = false;
+double iterateFace = 0;
+double cumulativeFace = 0;
+double displayFaceD = 0;
+int displayFaceI = 0;
+Timer gameOverTimer;
+#define GAMEOVERSPIN_DURATION 20000
+Timer fadeKilledKingTimer;
+
 
 void setup() {
-  // put your setup code here, to run once:
+  // seed ramomizer
   randomize();
 }
 
@@ -27,23 +37,27 @@ void loop() {
     if ( gamePhase == PLAY) {
       //increment clickCount 
       clickCount ++;
+      
+      if ( clicksToKill < clickCount){
+      //run timer & balloon pop display
+        balloonPoppedTimer.set(POPPING_DURATION);
+        //if this balloon is king that popped then also seed that info
+        if ( isKing ){
+          kingIsKilled = true;
+//          dimKilledKing = true;
+        }
+      }
     }
   }
 
-//this constantly fires since it's in main loop
-  if ( gamePhase == PLAY && isKing && clicksToKill < clickCount){
+  if( kingIsKilled && balloonPoppedTimer.isExpired() ){
     signalState = GO;  
-    gamePhase = KINGKILLED;
+    gamePhase = KINGKILLED; 
+    kingIsKilled = false;
+//    dimKilledKing = false;
+    fadeKilledKingTimer.set(5000);
   }
-//  if ( gamePhase == PLAY && clicksToKill < clickCount){
-//    //run timer & balloon pop display
-//    balloonPopped.set(POPPING_DURATION);
-//    //if this is king that popped then also send that info and end round
-//    if ( isKing )
-//      signalState = GO;  
-//      gamePhase = KINGKILLED;
-//  }
-//  
+  
   switch (signalState) {
     case INERT:
       inertLoop();
@@ -75,9 +89,9 @@ void inertLoop() {
   if (buttonDoubleClicked()){
       isKing = false;
       kingIsSelected = false;
+      kingIsKilled = false;
       signalState = GO;
       gamePhase = SETUP;
-//      randomizeClicksToKill(); 
     }
 
   if ( buttonMultiClicked()){
@@ -95,14 +109,12 @@ void inertLoop() {
       if ( gamePhase == KINGSELECTED){
         isKing = true;
         signalState = GO;
-//        randomizeClicksToKill();
       }
       if ( gamePhase == SETUP){
         isKing = true;
         kingIsSelected = true;
         gamePhase = KINGSELECTED;
         signalState = GO;
-//        randomizeClicksToKill();
       }
    }
    
@@ -115,7 +127,7 @@ void inertLoop() {
         gamePhase = getGamePhase(getLastValueReceivedOnFace(f));
 
         if (gamePhase == SETUP){
-//          randomizeClicksToKill();
+            kingIsKilled = false;
         }
         if (gamePhase == PLAY){
             clickCount = 0;
@@ -125,9 +137,10 @@ void inertLoop() {
             isKing = false;
             kingIsSelected = true;
         }
-//        if (gamePhase = KINGKILLED){
-//          start rainbow display
-//        }
+        if (gamePhase == KINGKILLED){
+          gameOverTimer.set(GAMEOVERSPIN_DURATION);
+          
+        }
       }
     }
   }
@@ -162,7 +175,6 @@ void resolveLoop() {
   
   // display color
 void displayFaceColor() {
-//    setColor(dim(colors[currentColorIndex],clickDim));  
   //default OFF to stop color lingering
   setColor(OFF);
     
@@ -173,11 +185,34 @@ void displayFaceColor() {
           displayHiddenBalloonHealth();
           break;
         case PLAY:
-          FOREACH_FACE(f) {
-            if (f <= clicksToKill - clickCount) {
-              setColorOnFace(dim(colors[currentColorIndex],clickDim),f);
+            if(!balloonPoppedTimer.isExpired()) {
+              getDisplayFaceGradual(balloonPoppedTimer, 15000);
+              //run color wheel pattern
+              switch(currentColorIndex) {
+                case 0:
+                  setColorOnFace(ORANGE,displayFaceI);
+                  setColorOnFace(colors[0],(displayFaceI+1) % 6);
+                  setColorOnFace(colors[0],(displayFaceI+2) % 6);
+                  setColorOnFace(colors[0],(displayFaceI+3) % 6);
+                  break;
+                case 1:
+                  setColorOnFace(ORANGE,displayFaceI);
+                  setColorOnFace(colors[1],(displayFaceI+1) % 6);
+                  setColorOnFace(colors[1],(displayFaceI+2) % 6);
+                  break;
+                case 2:
+                  setColorOnFace(ORANGE,displayFaceI);
+                  setColorOnFace(colors[2],(displayFaceI+1) % 6);
+                  break;
+              }
             }
-          }
+            else {
+              FOREACH_FACE(f) {
+                if (f <= clicksToKill - clickCount) {
+                  setColorOnFace(dim(colors[currentColorIndex],clickDim),f);
+                }
+              }
+            }
           break;
         case KINGSELECTED:
           if ( isKing ){
@@ -187,7 +222,6 @@ void displayFaceColor() {
             setColorOnFace(ORANGE, 3);
             setColorOnFace(YELLOW, 4);
             setColorOnFace(ORANGE, 5);
-  //          setColor(YELLOW);
           }
           else {
             displayHiddenBalloonHealth();
@@ -195,15 +229,25 @@ void displayFaceColor() {
           break;
         case KINGKILLED:
           if ( isKing ){
-            setColorOnFace(YELLOW, 0);
-            setColorOnFace(WHITE, 1);
-            setColorOnFace(YELLOW, 2);
-            setColorOnFace(WHITE, 3);
-            setColorOnFace(YELLOW, 4);
-            setColorOnFace(WHITE, 5);
+            if(!fadeKilledKingTimer.isExpired()) {
+              setColorOnFace(YELLOW, 0);
+              setColorOnFace(dim(WHITE,map(fadeKilledKingTimer.getRemaining(),0,5000,0,255)), 1);
+              setColorOnFace(YELLOW, 2);
+              setColorOnFace(dim(WHITE,map(fadeKilledKingTimer.getRemaining(),0,5000,0,255)), 3);
+              setColorOnFace(YELLOW, 4);
+              setColorOnFace(dim(WHITE,map(fadeKilledKingTimer.getRemaining(),0,5000,0,255)), 5);
+              //fade from white to dark and keep just yellow
+              }
+            else {
+              setColorOnFace(YELLOW, 0);
+              setColorOnFace(YELLOW, 2);
+              setColorOnFace(YELLOW, 4);          
+            }
           }
           else {
-            setColor(MAGENTA);
+            //non-King game over spin
+            getDisplayFaceGradual(gameOverTimer, 20000);
+            setColorOnFace(MAGENTA,displayFaceI);
           }
           break;
       }
@@ -250,9 +294,14 @@ void displayHiddenBalloonHealth(){
   }
 }
 
-//byte getGameMode(byte data) {
-//    return (data >> 2) & 7;//1st, 2nd, 3rd, and 4th bits
-//}
+//timer/divisor closest to 1 is fastest, closer to 0 is slower
+int getDisplayFaceGradual(Timer timer, double divisor) {
+  iterateFace = ((double) timer.getRemaining() / (double) divisor);
+  cumulativeFace = cumulativeFace + iterateFace;
+  displayFaceI = (int) cumulativeFace;
+  displayFaceI = displayFaceI % 6;
+  return displayFaceI;
+}
 
 byte getGamePhase(byte data) {
     return (data & 3);//returns bits E and F
@@ -261,4 +310,3 @@ byte getGamePhase(byte data) {
 byte getSignalState(byte data) {
     return ((data >> 2) & 3);//returns bits C and D
 }
-
