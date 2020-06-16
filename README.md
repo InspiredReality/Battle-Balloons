@@ -7,7 +7,7 @@ for 6+ Blinks
 
 You are captain of a hot air balloon fleet, trying to pop your opponent's Crown Balloon to emerge from battle victorious.  Navigate the airs of random chance and rely on strategic trickery to pop before you yourself are popped.
 
-More simply, the goal of the game is to pop the Balloon/Blink your opponent designated as Crown before they pop the Balloon/Blink you selected as your Crown.  Players take turns clicking their opponent's balloons to reduce balloon health and eventually pop them.  Watch out for the trap Bust Balloon!  Popping the Bust will cause you to lose immediately.  
+More simply, the goal of the game is to pop the Balloon/Blink your opponent designated as Crown before they pop the Balloon/Blink you selected as your Crown.  Players take turns clicking their opponent's balloons to reduce balloon health and eventually pop them.  Watch out for any trap Bust Balloons!  Popping the Bust will cause you to lose immediately.  
 
 ## ::Gameplay::
 ### SETUP Phase
@@ -15,9 +15,10 @@ More simply, the goal of the game is to pop the Balloon/Blink your opponent desi
 2) *Assign Colors*: **Single click** to cycle between ![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+)Red/Large, ![#1589F0](https://via.placeholder.com/15/1589F0/000000?text=+)Blue/Medium, ![#c5f015](https://via.placeholder.com/15/c5f015/000000?text=+)Green/Small
   </br> a) For even fair play, make sure each player has the same number of each color
   </br> b) To give one player an advantage, allow them to have more larger balloons
-3) *Select King/Queen or Bomb Balloon*: Each player **long presses** one or more of their Balloons/Blinks to set it as their King Balloon
+3) *Select Crown and/or Bomb Balloon(s)*: Each player **long presses** one or more of their Balloons/Blinks to set it as their Crown Balloon
   </br> a) Hide your selection from your opponent ;^) - this step is the strategic trickery
-  </br> b) King Balloon shows as yellow until PLAY phase
+  </br> b) Crown Balloon shows as yellow until PLAY phase begins
+  </br> c) Bust Balloon shows as purple until PLAY phase begins
 4) *Begin PLAY*: **3x click** one balloon/Blink on each player's cluster to move to PLAY phase 
 
 ### PLAY Phase - 3x click
@@ -32,7 +33,9 @@ More simply, the goal of the game is to pop the Balloon/Blink your opponent desi
   </br> a) At any point in the game, **2x click** restarts the game by going back to Setup Phase and re-randomizes balloon health
   
 ## ::Strategy::
-It might seem obvious to always select a Red balloon as your king since they take the longest to pop.  Your opponent knows this too so they may start clicking the Red balloon first.  If I know you think I should select a Red king, then selecting a Blue as king could make you waste 3-6 clicks popping a non-king Red balloon.  Let the game theory begin!
+It might seem obvious to always select a Red Balloon as your Crown since they take the longest to pop.  Your opponent knows this too so they may start clicking the Red Balloon first.  If I know you think I should select a Red Crown, then selecting a Blue as Crown could make you waste 3-6 clicks popping a non-Crown Red Balloon.  
+It also might seem obvious to only fortify your Crown Balloon if it gets low.  I know this.  If you think fortifying your Bust Balloon or another non-Crown will tempt me to start clicking that Balloon, maybe you're correct.  
+But then again if.. hmm... Let the game theory begin!
 
 ## ::Balloon Popping::
 Balloons "pop" after X clicks that are equally likely to be randomly selected depending on Balloon color.  For example, there's a 25% chance a Red balloon pops in 5 clicks, a 33% change a Blue Balloon pops in 3 clicks, and a 50% chance a Green Balloon pops in 2 clicks.
