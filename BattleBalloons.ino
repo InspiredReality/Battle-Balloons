@@ -486,6 +486,7 @@ void toggleCrownOrBust(){
   }
 }
 
+
 byte getGamePhase(byte data) {
     return (data & 3);//returns bits [E] [F]
 }
