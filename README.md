@@ -11,7 +11,7 @@ More simply, the goal of the game is to pop the Balloon/Blink your opponent desi
 
 ## ::Gameplay::
 ### SETUP Phase
-1) *Teach Game*: Once all Blinks learn the game, divide balloons/Blinks evenly among 2 players
+1) *Teach Game*: Once all Blinks learn the game, divide Balloons/Blinks evenly among 2 players
 2) *Assign Colors*: **Single click** to cycle between ![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+)Red/Large, ![#1589F0](https://via.placeholder.com/15/1589F0/000000?text=+)Blue/Medium, ![#c5f015](https://via.placeholder.com/15/c5f015/000000?text=+)Green/Small
   </br> a) For even fair play, make sure each player has the same number of each color
   </br> b) To give one player an advantage, allow them to have more larger balloons
