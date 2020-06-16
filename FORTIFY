@@ -1,0 +1,139 @@
+enum fortifyRoles {WAITING, FORTIFY};  //00, 01
+//Wait = astroid, Fortify = ship
+byte fortifyRole = WAITING;
+bool bChangeRole = false;
+int clicksToKill = 5; //life bar = clicksToKill+1 so need to - 1 to compensate
+//Waiting
+byte canFortify[6]; //isMinable[6]
+//Fortify
+byte isFortifying[6] = {false, false, false, false, false, false};
+
+bool startTest = false;
+
+void setup() {
+  // put your setup code here, to run once:
+  fortifyRole = WAITING;
+}
+
+void loop() {
+  if(startTest){
+  if ( buttonReleased() ){
+    if(clicksToKill > 0 ){
+      clicksToKill --;
+    }
+  }
+//
+//  if (isAlone() && clicksToKill < 6 ){
+//    fortifyRole = FORTIFY;
+//     }
+  if (isAlone() && clicksToKill > 0 ){
+    fortifyRole = FORTIFY;
+     }
+
+  switch (fortifyRole) {
+    case WAITING:
+      waitLoop();
+      break;
+    case FORTIFY:
+      fortifyLoop();
+      break;
+  }
+  
+  }
+
+  displayFaceColor();
+
+    if (buttonDoubleClicked()){
+    startTest = true;
+  }
+}
+
+void waitLoop() {
+    //look for balloons that are fortifying
+    FOREACH_FACE(f) {
+    if (!isValueReceivedOnFaceExpired(f)) {//neighbor!
+      if(didValueOnFaceChange(f)){  //a neighbor giving update
+      byte neighborData = getLastValueReceivedOnFace(f);
+      if (getFortifyRoles(neighborData) == FORTIFY) { //this neighbor is fortifying
+          canFortify[f] = false;
+          if(clicksToKill < 6 ){
+            clicksToKill ++;
+          }
+        }
+      }
+        else {//this is a face we COULD offer ore to
+            canFortify[f] = true;
+      }
+    }
+    else {//no neighbor
+      canFortify[f] = false;
+    }
+  if (fortifyRole = WAITING && canFortify[f] == false){
+    canFortify[f] = true;
+  }
+}
+  
+  //set up communication
+  FOREACH_FACE(f) {
+    byte sendData = (fortifyRole << 5) + (canFortify[f] << 4);
+    setValueSentOnFace(sendData, f);
+  }
+}
+
+void fortifyLoop(){
+  //default is try to fortify on face0
+  isFortifying[0] = false;
+
+      if (!isValueReceivedOnFaceExpired(0)) {//a neighbor!
+        byte neighborData = getLastValueReceivedOnFace(0); //updating
+        if (getFortifyRoles(neighborData) == WAITING) {//back to cluster
+          if (isFortifying[0]) { //I'm already mining here
+            if (getFortifyStatus(neighborData) == 0) {//he's done, so I'm done
+              isFortifying[0] = false;
+            }
+          } else 
+          {//I could be mining here if they'd let me
+            if (getFortifyStatus(neighborData) == 1) {//ore is available, take it
+              //why does this step get skipped? F doesnt revert to W (white face0 still) so missing 1 coming from W.
+              clicksToKill --;
+              fortifyRole = WAITING;
+              isFortifying[0] = true;
+            }
+          }
+        }
+      }
+      else {//no neighbor
+        isFortifying[0] = false;
+      }
+
+    //set up communication
+    byte sendData = (fortifyRole << 5) + (isFortifying[0] << 4);
+    setValueSentOnFace(sendData, 0);
+}
+
+void displayFaceColor() {
+  setColor(OFF);
+
+  if(!startTest){
+    setColor(GREEN);
+  }
+  else{
+    FOREACH_FACE(f) {
+      if (f < clicksToKill ) {
+          setColorOnFace(dim(RED,255),f);
+      }
+    }
+    
+    if (fortifyRole == FORTIFY){
+      setColorOnFace(WHITE, 0);
+    }
+  }
+}
+
+byte getFortifyRoles(byte data) {
+  return (data >> 5);// [A]
+}
+
+byte getFortifyStatus(byte data) { //
+  return ((data >> 4));//[B]
+}
