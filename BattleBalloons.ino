@@ -1,15 +1,29 @@
+//COMMS
 enum signalStates {INERT, GO, RESOLVE};  //00, 01, 10
 byte signalState = INERT;
-enum gamePhases {SETUP, KINGSELECTED, PLAY, KINGKILLED}; //game phases, 00, 01, 10, 11
+enum gamePhases {SETUP, CROWNSELECTED, PLAY, CROWNKILLED}; //game phases, 00, 01, 10, 11
 byte gamePhase = SETUP;  //the default game phase when the game begins
+enum fortifyRoles {WAITING, FORTIFY};  //00, 01
+byte fortifyRole = WAITING;
+byte canFortify[6]; //Waiting
+//byte isFortifying[6] = {false, false, false, false, false, false};  //Fortify
+bool isFortifying;
+//Aesthetics
 Color colors[] = { RED, BLUE, GREEN };
 byte currentColorIndex = 0;
 byte clickDim = 255;
-bool isKing = false;
-bool kingIsSelected = false;
-bool kingIsKilled = false;
-byte clicksToKill = 3;
-byte clickCount = 0;
+#define BUSTCOLOR makeColorRGB(162, 0, 255)
+#define CROWNCOLOR makeColorRGB(255, 208, 0)
+//mostly white redish purp
+#define GAMEOVERSPIN makeColorRGB(255, 194, 220)
+Color nonCrownBustSpinColor;
+//Game logic
+bool isCrown = false;
+bool isBust = false;
+bool endedGame = false;
+bool crownIsSelected = false;
+bool gameOver = false;
+byte clicksToKill = 3; //life bar = clicksToKill+1 so need to - 1 to compensate
 //timers
 Timer balloonPoppedTimer;
 #define POPPING_DURATION 3500
@@ -20,12 +34,15 @@ double displayFaceD = 0;
 int displayFaceI = 0;
 Timer gameOverTimer;
 #define GAMEOVERSPIN_DURATION 20000
-Timer fadeKilledKingTimer;
 
+Timer fadeKilledCrownTimer;
+bool fortifying = false;
+bool balloonsOverBubbles;
 
 void setup() {
   // seed ramomizer
   randomize();
+  nonCrownBustSpinColor = GAMEOVERSPIN;
 }
 
 void loop() {
@@ -35,27 +52,34 @@ void loop() {
   if ( buttonReleased() ){
     clickDim = 255;    
     if ( gamePhase == PLAY) {
-      //increment clickCount 
-      clickCount ++;
-      
-      if ( clicksToKill < clickCount){
+      if ( clicksToKill > 0){
+      //reduce clicksToKill
+        clicksToKill --;        
+      }
+      if ( clicksToKill == 0) {
       //run timer & balloon pop display
         balloonPoppedTimer.set(POPPING_DURATION);
-        //if this balloon is king that popped then also seed that info
-        if ( isKing ){
-          kingIsKilled = true;
-//          dimKilledKing = true;
+        //if this balloon is Crown that popped then also seed that info
+        if ( isCrown ){
+          gameOver = true;
+          endedGame = true;
+//          nonCrownBustSpinColor = CROWNCOLOR;
+        }
+        else if ( isBust ){
+          gameOver = true;
+          endedGame = true;
+//          nonCrownBustSpinColor = BUSTCOLOR;
         }
       }
     }
   }
 
-  if( kingIsKilled && balloonPoppedTimer.isExpired() ){
+  if( gameOver && balloonPoppedTimer.isExpired() ){
     signalState = GO;  
-    gamePhase = KINGKILLED; 
-    kingIsKilled = false;
+    gamePhase = CROWNKILLED; 
+    gameOver = false;
 //    dimKilledKing = false;
-    fadeKilledKingTimer.set(5000);
+    fadeKilledCrownTimer.set(5000);
   }
   
   switch (signalState) {
@@ -72,52 +96,75 @@ void loop() {
 
   displayFaceColor();
   
-  byte sendData = (signalState << 2) + (gamePhase);
+//  byte sendData = (signalState << 2) + (gamePhase);
+//  setValueSentOnAllFaces(sendData);
+  byte sendData = (fortifyRole << 5) + (isFortifying << 4) + (signalState << 2) + (gamePhase);
   setValueSentOnAllFaces(sendData);
 }
 
 void inertLoop() {
   if ( buttonSingleClicked() ) {
     //only switch balloon color if in SETUP phase
-    if ( gamePhase == SETUP){
-      currentColorIndex = (currentColorIndex + 1) % 3;
+    if ( gamePhase == SETUP ) {
+        currentColorIndex = (currentColorIndex + 1) % 3;
+    }
+    if ( gamePhase == CROWNSELECTED ){
+      toggleCrownOrBust();
+  //    signalState = GO;
     }
   }
 
   //set myself to GO when 2x clicked to tell others to switch to SETUP
   //reset King Selection & re-randomize
   if (buttonDoubleClicked()){
-      isKing = false;
-      kingIsSelected = false;
-      kingIsKilled = false;
-      signalState = GO;
-      gamePhase = SETUP;
-    }
+    resetSetup();
+    signalState = GO;
+    gamePhase = SETUP;
+  }
 
   if ( buttonMultiClicked()){
+    if ( buttonClickCount() == 3){
   //set myself to GO when 3x clicked to tell others to switch to PLAY game phase
-      if ( gamePhase == KINGSELECTED){
+      if ( gamePhase == CROWNSELECTED ){
         //set game phase to PLAY
         gamePhase = PLAY;
-        clickCount = 0;
         signalState = GO;
         randomizeClicksToKill();
+        fortifyRole = WAITING;
       }
     }
-    
+  }
+        
   if ( buttonLongPressed()){
-      if ( gamePhase == KINGSELECTED){
-        isKing = true;
+    //requests to remove this limitation but then we need to know to 2xclick to clear Kings selected and restart
+      if ( gamePhase == SETUP ){
+        isCrown = true;
+        crownIsSelected = true;
+        gamePhase = CROWNSELECTED;
         signalState = GO;
       }
-      if ( gamePhase == SETUP){
-        isKing = true;
-        kingIsSelected = true;
-        gamePhase = KINGSELECTED;
-        signalState = GO;
+      if ( gamePhase == CROWNSELECTED ){
+        isCrown = true;
       }
    }
-   
+
+   //Fortify in PLAY only+++++++++
+  if (gamePhase == PLAY){
+  
+    if (isAlone() && clicksToKill > 0 ){  //we don't have a neighbor so we're in FORTIFY mode
+      fortifyRole = FORTIFY;
+    }
+  
+    switch (fortifyRole) {
+      case WAITING:
+        waitLoop();
+        break;
+      case FORTIFY:
+        fortifyLoop();
+        break;
+    }
+  }
+    
   //listen for neighbors in GO
   FOREACH_FACE(f) {
     if (!isValueReceivedOnFaceExpired(f)) {//we have a neighbor
@@ -127,17 +174,18 @@ void inertLoop() {
         gamePhase = getGamePhase(getLastValueReceivedOnFace(f));
 
         if (gamePhase == SETUP){
-            kingIsKilled = false;
+            resetSetup();
         }
+        if (gamePhase == CROWNSELECTED){
+          //commenting this out to allow multiple Crowns
+//            isCrown = false;
+            crownIsSelected = true;
+        }        
         if (gamePhase == PLAY){
-            clickCount = 0;
             randomizeClicksToKill();
+            fortifyRole = WAITING;
         }
-        if (gamePhase == KINGSELECTED){
-            isKing = false;
-            kingIsSelected = true;
-        }
-        if (gamePhase == KINGKILLED){
+        if (gamePhase == CROWNKILLED){
           gameOverTimer.set(GAMEOVERSPIN_DURATION);
           
         }
@@ -172,6 +220,76 @@ void resolveLoop() {
   }
 }
 
+void waitLoop() {
+    //look for balloons that are fortifying
+    FOREACH_FACE(f) {
+    if (!isValueReceivedOnFaceExpired(f)) {//neighbor!
+      if(didValueOnFaceChange(f)){  //a neighbor giving update
+      byte neighborData = getLastValueReceivedOnFace(f);
+      if (getFortifyRoles(neighborData) == FORTIFY) { //this neighbor is fortifying
+          canFortify[f] = false;
+          isFortifying = false;
+          if(clicksToKill < 6 ){
+            clicksToKill ++;
+          }
+        }
+      }
+        else {//this is a face we COULD offer ore to
+            canFortify[f] = true;
+            isFortifying = true;
+      }
+    }
+    else {//no neighbor
+      canFortify[f] = false;
+      isFortifying = false;
+    }
+    if (fortifyRole = WAITING && canFortify[f] == false){
+      canFortify[f] = true;
+      isFortifying = true;
+    }
+  }
+  
+  //set up communication
+  FOREACH_FACE(f) {
+    byte sendData = (fortifyRole << 5) + (isFortifying << 4);
+    setValueSentOnFace(sendData, f);
+  }
+}
+
+void fortifyLoop(){
+  //default is try to fortify on face0
+  isFortifying = false;
+
+      if (!isValueReceivedOnFaceExpired(0)) {//a neighbor!
+        byte neighborData = getLastValueReceivedOnFace(0); //updating
+        if (getFortifyRoles(neighborData) == WAITING) {//back to cluster
+          if (isFortifying) { //I'm already mining here
+            if (getFortifyStatus(neighborData) == 0) {//he's done, so I'm done
+//              isFortifying[0] = false;
+              isFortifying = false;
+            }
+          } else 
+          {//I could be mining here if they'd let me
+            if (getFortifyStatus(neighborData) == 1) {//ore is available, take it
+              //why does this step get skipped? F doesnt revert to W (white face0 still) so missing 1 coming from W.
+              clicksToKill --;
+              fortifyRole = WAITING;
+//              isFortifying[0] = true;
+              isFortifying = true;
+            }
+          }
+        }
+      }
+      else {//no neighbor
+//        isFortifying[0] = false;
+        isFortifying = false;
+      }
+
+    //set up communication
+//    byte sendData = (fortifyRole << 5) + (isFortifying[0] << 4);
+    byte sendData = (fortifyRole << 5) + (isFortifying << 4);
+    setValueSentOnFace(sendData, 0);
+}
   
   // display color
 void displayFaceColor() {
@@ -184,38 +302,8 @@ void displayFaceColor() {
         case SETUP:
           displayHiddenBalloonHealth();
           break;
-        case PLAY:
-            if(!balloonPoppedTimer.isExpired()) {
-              getDisplayFaceGradual(balloonPoppedTimer, 15000);
-              //run color wheel pattern
-              switch(currentColorIndex) {
-                case 0:
-                  setColorOnFace(ORANGE,displayFaceI);
-                  setColorOnFace(colors[0],(displayFaceI+1) % 6);
-                  setColorOnFace(colors[0],(displayFaceI+2) % 6);
-                  setColorOnFace(colors[0],(displayFaceI+3) % 6);
-                  break;
-                case 1:
-                  setColorOnFace(ORANGE,displayFaceI);
-                  setColorOnFace(colors[1],(displayFaceI+1) % 6);
-                  setColorOnFace(colors[1],(displayFaceI+2) % 6);
-                  break;
-                case 2:
-                  setColorOnFace(ORANGE,displayFaceI);
-                  setColorOnFace(colors[2],(displayFaceI+1) % 6);
-                  break;
-              }
-            }
-            else {
-              FOREACH_FACE(f) {
-                if (f <= clicksToKill - clickCount) {
-                  setColorOnFace(dim(colors[currentColorIndex],clickDim),f);
-                }
-              }
-            }
-          break;
-        case KINGSELECTED:
-          if ( isKing ){
+        case CROWNSELECTED:
+          if ( isCrown ){
             setColorOnFace(YELLOW, 0);
             setColorOnFace(ORANGE, 1);
             setColorOnFace(YELLOW, 2);
@@ -223,31 +311,104 @@ void displayFaceColor() {
             setColorOnFace(YELLOW, 4);
             setColorOnFace(ORANGE, 5);
           }
+          else if ( isBust ){
+            setColorOnFace(YELLOW, 0);
+            setColorOnFace(MAGENTA, 1);
+            setColorOnFace(YELLOW, 2);
+            setColorOnFace(MAGENTA, 3);
+            setColorOnFace(YELLOW, 4);
+            setColorOnFace(MAGENTA, 5);
+          }          
           else {
             displayHiddenBalloonHealth();
           }
           break;
-        case KINGKILLED:
-          if ( isKing ){
-            if(!fadeKilledKingTimer.isExpired()) {
-              setColorOnFace(YELLOW, 0);
-              setColorOnFace(dim(WHITE,map(fadeKilledKingTimer.getRemaining(),0,5000,0,255)), 1);
-              setColorOnFace(YELLOW, 2);
-              setColorOnFace(dim(WHITE,map(fadeKilledKingTimer.getRemaining(),0,5000,0,255)), 3);
-              setColorOnFace(YELLOW, 4);
-              setColorOnFace(dim(WHITE,map(fadeKilledKingTimer.getRemaining(),0,5000,0,255)), 5);
-              //fade from white to dark and keep just yellow
-              }
-            else {
-              setColorOnFace(YELLOW, 0);
-              setColorOnFace(YELLOW, 2);
-              setColorOnFace(YELLOW, 4);          
+        case PLAY:
+          if(!balloonPoppedTimer.isExpired()) {
+            getDisplayFaceGradual(balloonPoppedTimer, 15000);
+            //run color wheel pattern
+            switch(currentColorIndex) {
+              case 0:
+                setColorOnFace(ORANGE,displayFaceI);
+                setColorOnFace(colors[0],(displayFaceI+1) % 6);
+                setColorOnFace(colors[0],(displayFaceI+2) % 6);
+                setColorOnFace(colors[0],(displayFaceI+3) % 6);
+                break;
+              case 1:
+                setColorOnFace(ORANGE,displayFaceI);
+                setColorOnFace(colors[1],(displayFaceI+1) % 6);
+                setColorOnFace(colors[1],(displayFaceI+2) % 6);
+                break;
+              case 2:
+                setColorOnFace(ORANGE,displayFaceI);
+                setColorOnFace(colors[2],(displayFaceI+1) % 6);
+                break;
             }
           }
           else {
-            //non-King game over spin
+            FOREACH_FACE(f) {
+              if (f < clicksToKill ) {
+                setColorOnFace(dim(colors[currentColorIndex],clickDim),f);
+              }
+            }
+            //keeping very dim color instead of all blank
+            if ( clicksToKill == 0){
+              setColor(dim(colors[currentColorIndex],70));
+            }
+            if (fortifyRole == FORTIFY){
+              setColorOnFace(WHITE, 0);
+            }
+          }
+          break;
+        case CROWNKILLED:
+          if ( endedGame ){
+            if ( isCrown ){
+              if(!fadeKilledCrownTimer.isExpired()) {
+                setColorOnFace(CROWNCOLOR, 0);
+                setColorOnFace(dim(WHITE,map(fadeKilledCrownTimer.getRemaining(),0,5000,0,255)), 1);
+                setColorOnFace(CROWNCOLOR, 2);
+                setColorOnFace(dim(WHITE,map(fadeKilledCrownTimer.getRemaining(),0,5000,0,255)), 3);
+                setColorOnFace(CROWNCOLOR, 4);
+                setColorOnFace(dim(WHITE,map(fadeKilledCrownTimer.getRemaining(),0,5000,0,255)), 5);
+                //fade from white to dark and keep just yellow
+                }
+              else {
+                setColorOnFace(CROWNCOLOR, 0);
+                setColorOnFace(CROWNCOLOR, 2);
+                setColorOnFace(CROWNCOLOR, 4);          
+              }
+            }
+            else if ( isBust ){
+              if(!fadeKilledCrownTimer.isExpired()) {
+                setColorOnFace(BUSTCOLOR, 0);
+                setColorOnFace(dim(WHITE,map(fadeKilledCrownTimer.getRemaining(),0,5000,0,255)), 1);
+                setColorOnFace(BUSTCOLOR, 2);
+                setColorOnFace(dim(WHITE,map(fadeKilledCrownTimer.getRemaining(),0,5000,0,255)), 3);
+                setColorOnFace(BUSTCOLOR, 4);
+                setColorOnFace(dim(WHITE,map(fadeKilledCrownTimer.getRemaining(),0,5000,0,255)), 5);
+                //fade from white to dark and keep just purple
+                }
+              else {
+                setColorOnFace(BUSTCOLOR, 0);
+                setColorOnFace(BUSTCOLOR, 2);
+                setColorOnFace(BUSTCOLOR, 4);          
+              }
+            }
+          }
+          else if ( isCrown ){
+            //non-game ending Crown game over spin
             getDisplayFaceGradual(gameOverTimer, 20000);
-            setColorOnFace(MAGENTA,displayFaceI);
+            setColorOnFace(CROWNCOLOR,displayFaceI);       
+          }
+          else if ( isBust ){
+            //non-game ending Bust game over spin
+            getDisplayFaceGradual(gameOverTimer, 20000);
+            setColorOnFace(BUSTCOLOR,displayFaceI);
+          }
+          else {
+            //non-Crown or Bust game over spin
+            getDisplayFaceGradual(gameOverTimer, 20000);
+            setColorOnFace(nonCrownBustSpinColor,displayFaceI);
           }
           break;
       }
@@ -265,13 +426,13 @@ void randomizeClicksToKill(){
   //set or reset clicksToKill based on color
   switch (currentColorIndex) {
     case 0:
-      clicksToKill = random( 3 ) + 2;
+      clicksToKill = random( 3 ) + 3;
       break;
     case 1:
-      clicksToKill = random( 2 ) + 1;
+      clicksToKill = random( 2 ) + 2;
       break;
     case 2:
-      clicksToKill = random( 1 );
+      clicksToKill = random( 1 ) + 1;
       break;
   }
 }
@@ -279,17 +440,17 @@ void randomizeClicksToKill(){
 void displayHiddenBalloonHealth(){
     switch(currentColorIndex) {
     case 0:
-      setColor(colors[0]);
+      setColor(dim(colors[0],clickDim));
       break;
     case 1:
-      setColorOnFace(colors[1],0);
-      setColorOnFace(colors[1],1);
-      setColorOnFace(colors[1],2);
-      setColorOnFace(colors[1],3);
+      setColorOnFace(dim(colors[1],clickDim),0);
+      setColorOnFace(dim(colors[1],clickDim),1);
+      setColorOnFace(dim(colors[1],clickDim),2);
+      setColorOnFace(dim(colors[1],clickDim),3);
       break;
     case 2:
-      setColorOnFace(colors[2],4);
-      setColorOnFace(colors[2],5);
+      setColorOnFace(dim(colors[2],clickDim),4);
+      setColorOnFace(dim(colors[2],clickDim),5);
       break;
   }
 }
@@ -303,10 +464,44 @@ int getDisplayFaceGradual(Timer timer, double divisor) {
   return displayFaceI;
 }
 
+void resetSetup(){
+  isCrown = false;
+  isBust = false;
+  crownIsSelected = false;
+  gameOver = false;
+  endedGame = false;
+}
+
+void toggleCrownOrBust(){
+  if (isCrown){
+    isCrown = false;
+    isBust = true;
+  }
+  else if (isBust){
+    isBust = false;
+    isCrown = true;
+  }
+  else{
+    isBust = true;
+  }
+}
+
 byte getGamePhase(byte data) {
-    return (data & 3);//returns bits E and F
+    return (data & 3);//returns bits [E] [F]
 }
 
 byte getSignalState(byte data) {
-    return ((data >> 2) & 3);//returns bits C and D
+    return ((data >> 2) & 3);//returns bits [C] [D]
+}
+
+byte getFortifyRoles(byte data) {
+  return (data >> 5);// [A]
+}
+
+byte getFortifyStatus(byte data) { 
+  return ((data >> 4));//[B]
+}
+
+byte getBubblesOrBalloons(byte data) {
+  return (data >> 5);// [A]
 }
