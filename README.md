@@ -31,17 +31,6 @@ More simply, the goal of the game is to pop the Balloon/Blink your opponent desi
   </br> a) Bust Balloon turns white/purple and others in cluster spin purple when Bust is popped
 7) *Play Again*: **2x click** a Blink in each connected cluster to return to SETUP phase
   </br> a) At any point in the game, **2x click** restarts the game by going back to Setup Phase and re-randomizes balloon health
-
-5) *Start Popping*: Players take one of two actions during their turn.
-  </br> a) Attack - Click an opponent's Balloon to reduce health, shown by # faces lit (-1)
-  </br> b) Fortify - Transfer health from one of your Balloons to another (+1)
-6) *Win*: Player who pops their opponent's King Balloon wins!
-  </br> a) Crown Balloon turns white/yellow and others in cluster spin yellow when Crown is popped
-6.5) *Lose*: Player who pops their opponent's Bust Balloon loses!
-  </br> a) Bust Balloon turns white/purple and others in cluster spin purple when Bust is popped
-7) *Play Again*: **2x click** a Blink in each connected cluster to return to SETUP phase
-  </br> a) At any point in the game, **2x click** restarts the game by going back to Setup Phase and re-randomizes balloon health
-  
   
 ## ::Strategy::
 It might seem obvious to always select a Red Balloon as your Crown since they take the longest to pop.  Your opponent knows this too so they may start clicking the Red Balloon first.  If I know you think I should select a Red Crown, then selecting a Blue as Crown could make you waste 3-6 clicks popping a non-Crown Red Balloon.  
