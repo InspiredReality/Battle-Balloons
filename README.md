@@ -15,10 +15,11 @@ More simply, the goal of the game is to pop the Balloon/Blink your opponent desi
 2) *Assign Colors*: **Single click** to cycle between ![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+)Red/Large, ![#1589F0](https://via.placeholder.com/15/1589F0/000000?text=+)Blue/Medium, ![#c5f015](https://via.placeholder.com/15/c5f015/000000?text=+)Green/Small
   </br> a) For even fair play, make sure each player has the same number of each color
   </br> b) To give one player an advantage, allow them to have more larger balloons
-3) *Select Crown and/or Bomb Balloon(s)*: Each player **long presses** one or more of their Balloons/Blinks to set it as their Crown Balloon
+3) *Select Crown and/or Bust Balloon(s)*: Each player **long presses** one or more of their Balloons/Blinks to set it as their Crown Balloon (**long pressing** again will reset back to a regular Balloon)  
   </br> a) Hide your selection from your opponent ;^) - this step is the strategic trickery
-  </br> b) Crown Balloon shows as yellow until PLAY phase begins
-  </br> c) Bust Balloon shows as purple until PLAY phase begins
+  </br> b) **Single click** to cycle between Crown and Bust Balloons
+  </br> c) Crown Balloon shows as yellow until PLAY phase begins
+  </br> d) Bust Balloon shows as purple until PLAY phase begins
 4) *Begin PLAY*: **3x click** one balloon/Blink on each player's cluster to move to PLAY phase 
 
 ### PLAY Phase - 3x click
@@ -26,9 +27,9 @@ More simply, the goal of the game is to pop the Balloon/Blink your opponent desi
   </br> a) Attack - Click an opponent's Balloon to reduce health, shown by # faces lit (-1)
   </br> b) Fortify - Transfer health from one of your Balloons to another (+1)
 6) *Lose*: Player who pops their opponent's Bust Balloon loses!
-  </br> a) Bust Balloon turns white/purple-ish and others in cluster spin white-ish when Bust is popped
+  </br> a) Bust Balloon turns white/purple-ish when a Bust is popped
 7) *Win*: Player who pops their opponent's King Balloon wins!
-  </br> a) Crown Balloon turns white/yellow-ish and others in cluster spin white-ish when Crown is popped
+  </br> a) Crown Balloon turns white/yellow-ish when a Crown is popped
 8) *Play Again*: **2x click** a Blink in each connected cluster to return to SETUP phase
   </br> a) At any point in the game, **2x click** restarts the game by going back to Setup Phase and re-randomizes balloon health
   
