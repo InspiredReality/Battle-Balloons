@@ -9,6 +9,13 @@ enum lastPopStates {Crown, Bust, None};
 byte lastPopState = None;  //Crown, Bust, Neither
 
 //Aesthetics
+//First New Color Combo
+#define REDY makeColorRGB(250,10,75)
+#define BLUEY makeColorRGB(0, 139, 248)
+#define GREENY makeColorRGB(25,250,0) 
+#define YELLOWY makeColorRGB(247, 215, 5)
+#define PURPLEY makeColorRGB(83, 28, 179)
+
 //Circus:
 //#define REDY makeColorRGB(212, 67, 67)  //Hot Pink
 //#define BLUEY makeColorRGB(75,177,223) //Aqua
@@ -89,17 +96,11 @@ byte lastPopState = None;  //Crown, Bust, Neither
 //#define PURPLEY makeColorRGB(131, 56, 236)
 
 //4:
-#define REDY makeColorRGB (255, 0, 60)
-#define BLUEY makeColorRGB(0, 139, 248)
-#define GREENY makeColorRGB(137, 252, 0)
-#define YELLOWY makeColorRGB(245, 183, 0)
-#define PURPLEY makeColorRGB (83, 28, 179)
-
-
-
-
-
-
+// #define REDY makeColorRGB (255, 0, 60)
+// #define BLUEY makeColorRGB(0, 139, 248)
+// #define GREENY makeColorRGB(137, 252, 0)
+// #define YELLOWY makeColorRGB(245, 183, 0)
+// #define PURPLEY makeColorRGB (83, 28, 179)
 
 //#define REDY makeColorRGB(250,38,173)  //Hot Pink
 //#define BLUEY makeColorRGB(38,223,208) //Aqua
@@ -187,7 +188,7 @@ void loop() {
     }
   }
 
-        //reset King Selection & switch to SETUP
+  //reset Crown & Bust Selection & switch to SETUP
   if (buttonDoubleClicked()){
     reset();
   }
@@ -232,13 +233,6 @@ void setupLoop() {
     }
   }
 
-//  if ( buttonMultiClicked()){
-//    if ( buttonClickCount() == 3){
-//    //3x clicked so tell others to switch to PLAY game phase
-//        //set game phase to START that will go to PLAY
-//        gamePhase = START;
-//    }
-//  }
   if ( buttonMultiClicked() && buttonClickCount() == 3){
     //3x clicked so tell others to switch to PLAY game phase
         //set game phase to START that will go to PLAY
@@ -257,7 +251,6 @@ void setupLoop() {
 
 void startLoop() {
   gamePhase = PLAY;
-//  randomizeClicksToKill();
   switch (currentColorIndex) {
   case 0:
     clicksToKill = random( 3 ) + 3;
@@ -279,8 +272,6 @@ void startLoop() {
 }
 
 void playLoop() {
-//if ( buttonReleased() || buttonSingleClicked() ){
-//causes double counting clicksToKill
   if ( buttonReleased() ){
     clickDim = 255;
       if ( clicksToKill > 0){
@@ -296,13 +287,9 @@ void playLoop() {
   if ( popped && balloonPoppedTimer.isExpired() && !speacialFaded ){
     if ( isCrown ){
       popState = CROWN;
-//      fadePoppedSpecialTimer.set(6000);
-//      speacialFaded = true;
     }
     else if ( isBust ){
       popState = BUST;
-//      fadePoppedSpecialTimer.set(6000);
-//      speacialFaded = true;
     }
       fadePoppedSpecialTimer.set(6000);
       speacialFaded = true;
@@ -324,10 +311,7 @@ void playLoop() {
       }
     }
   }
-
-
 }
-
 
 //fortifySignals Logic -------
 void waitingLoop() {
@@ -361,8 +345,6 @@ void sendLoop() {
 }
 
 void heardLoop() {
-  //could lead to extra health, to fix listen for INERT from the specific face that
-//  clicksToKill ++;
   FOREACH_FACE(f) {
     if (!isValueReceivedOnFaceExpired(f)) {//a neighbor!
       if (getFortifySignal(getLastValueReceivedOnFace(f)) == WAITING) {
@@ -374,16 +356,13 @@ void heardLoop() {
 
 //popStates Logic -------
 void inertPopLoop() {
-//  lastPopState = None;
   FOREACH_FACE(f) {
     if (!isValueReceivedOnFaceExpired(f)) {//a neighbor!
       if (getPopState(getLastValueReceivedOnFace(f)) == CROWN) {
         popState = CROWN;
-//        lastPopState = Crown;
       }
       else if (getPopState(getLastValueReceivedOnFace(f)) == BUST) {
         popState = BUST;
-//        lastPopState = Bust;
       }        
     }
   }
@@ -401,7 +380,7 @@ void crownPopLoop() {
   lastPopState = Crown;
   specialDisplay = YELLOWY;
   
-  popState = RESOLVE;//I default to this at the start of the loop. Only if I see a problem does this not happen
+  popState = RESOLVE;
   //look for neighbors who have not moved to CROWN
   FOREACH_FACE(f) {
     if (!isValueReceivedOnFaceExpired(f)) {//a neighbor!
@@ -414,7 +393,7 @@ void crownPopLoop() {
 
 void bustPopLoop() {
   //set timer for purple swirl animation over the remaining life
-  //create BustNoti and CrownNoti instead of using same timer to save space in displayLoop ?
+  //create BustNoti and CrownNoti instead of using same timer to save space in displayLoop? Only needed if duration is diff.
   if ( isBust && !fadePoppedSpecialTimer.isExpired() ){
     specialPoppedNotificationTimer.set(0);
   }
@@ -425,7 +404,7 @@ void bustPopLoop() {
   lastPopState = Bust;
   specialDisplay = PURPLEY;
           
-  popState = RESOLVE;//I default to this at the start of the loop. Only if I see a problem does this not happen
+  popState = RESOLVE;
   //look for neighbors who have not moved to BUST
   FOREACH_FACE(f) {
     if (!isValueReceivedOnFaceExpired(f)) {//a neighbor!
@@ -438,7 +417,6 @@ void bustPopLoop() {
 
 void resolvePopLoop() {
   popState = INERT;
-
     FOREACH_FACE(f) {
     if (!isValueReceivedOnFaceExpired(f)) {//a neighbor!
       if (getPopState(getLastValueReceivedOnFace(f)) == BUST || getPopState(getLastValueReceivedOnFace(f)) == CROWN) {
@@ -477,7 +455,7 @@ void displayFaceColor() {
     //popping
       if(!balloonPoppedTimer.isExpired()) {
         getDisplayFaceGradual(balloonPoppedTimer, 15000);
-        //run color wheel pattern
+        //run 'on fire' color wheel pattern
         switch(currentColorIndex) {
           case 0:
             setColorOnFace(ORANGE,displayFaceI);
@@ -496,6 +474,7 @@ void displayFaceColor() {
             break;
         }
       }
+      //popped
       else if ( popped ) {
         if (isCrown || isBust ) {
           if ( isCrown ){
@@ -537,44 +516,10 @@ void displayFaceColor() {
         simpleIterateFaceTimer.set(333);
         simpleIterateFace ++;
       }
-//      simpleIterateFace = (int) specialPoppedNotificationTimer.getRemaining() / 333;
       setColorOnFace(dim(specialDisplay,255),(3 + simpleIterateFace) % 6);
       setColorOnFace(dim(WHITE,255),(4 + simpleIterateFace) % 6);
       setColorOnFace(dim(specialDisplay,255),(5 + simpleIterateFace) % 6);
     }
-
-//    switch(lastPopState) {
-//      case Crown:
-//        if( !specialPoppedNotificationTimer.isExpired() / 333 > ) {
-////          simpleIterateFace = specialPoppedNotificationTimer.getRemaining()
-////          simpleIterateFace ++;
-//          //too fast to see pattern
-////          setColorOnFace(dim(YELLOWY,255),(3 + simpleIterateFace % 6));
-//          setColorOnFace(dim(YELLOWY,255),3);
-//          setColorOnFace(dim(YELLOWY,255),4);
-//          setColorOnFace(dim(YELLOWY,255),5);
-//        }
-//        break;
-//      case Bust:
-//        if( !specialPoppedNotificationTimer.isExpired() ) {
-//          //not enough space
-////          setColorOnFace(dim(PURPLEY,255),0 + getDisplayFaceGradual(specialPoppedNotificationTimer,4000));
-//          setColorOnFace(dim(PURPLEY,clickDim),0);
-//          setColorOnFace(dim(PURPLEY,clickDim),1);
-//          setColorOnFace(dim(PURPLEY,clickDim),2);
-//        }
-//        break;
-//    }
-
-//    simpleIterateFaceTimer
-//    switch(popState) {
-//      case CROWN:
-//        setColor(WHITE);
-//        break;
-//      case BUST:
-//        setColor(ORANGE);
-//        break;
-//    }
       break;
   }
 
@@ -632,13 +577,9 @@ void displayHiddenBalloonHealth(){
 byte getGamePhase(byte data) {
     return ((data >> 4) & 3);//returns bits [A] [B]
 }
-
-
 byte getFortifySignal(byte data) {
     return ((data >> 2) & 3);//returns bits [C] [D]
 }
-
-
 byte getPopState(byte data) {
     return (data & 3);//returns bits [E] [F]
 }
