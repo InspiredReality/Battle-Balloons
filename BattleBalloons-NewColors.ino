@@ -481,13 +481,9 @@ void displayHiddenBalloonHealth(){
 byte getGamePhase(byte data) {
     return ((data >> 4) & 3);//returns bits [A] [B]
 }
-
-
 byte getFortifySignal(byte data) {
     return ((data >> 2) & 3);//returns bits [C] [D]
 }
-
-
 byte getPopState(byte data) {
     return (data & 3);//returns bits [E] [F]
 }
