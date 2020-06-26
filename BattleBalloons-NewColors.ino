@@ -15,105 +15,9 @@ byte lastPopState = None;  //Crown, Bust, Neither
 #define GREENY makeColorRGB(25,250,0) 
 #define YELLOWY makeColorRGB(247, 215, 5)
 #define PURPLEY makeColorRGB(83, 28, 179)
-
-//Circus:
-//#define REDY makeColorRGB(212, 67, 67)  //Hot Pink
-//#define BLUEY makeColorRGB(75,177,223) //Aqua
-//#define GREENY makeColorRGB(158, 212, 80) //Neon Green
-//#define YELLOWY makeColorRGB( 255, 180, 0)// gold
-//#define PURPLEY makeColorRGB(144, 104, 212) // violet
-
-//Pallettes Kelly Green:
-//#define REDY makeColorRGB(255, 87, 101)
-//#define BLUEY makeColorRGB(38, 223, 208)
-//#define GREENY makeColorRGB(168, 225, 12)
-//#define YELLOWY makeColorRGB(255, 219, 21)
-//#define PURPLEY makeColorRGB(138, 111, 223)
-  
-//Pallettes Gold:
-//#define REDY makeColorRGB(255, 84, 18) 
-//#define BLUEY makeColorRGB(1, 222, 230)
-//#define GREENY makeColorRGB(0, 141, 124)
-//#define YELLOWY makeColorRGB(251, 246, 8)
-//#define PURPLEY makeColorRGB(255, 102, 233)
-
-
-//Pallettes:
-//#define REDY makeColorRGB(245, 23, 32)
-//#define BLUEY makeColorRGB(77, 179, 228)
-//#define GREENY makeColorRGB(68, 238, 119)
-//#define YELLOWY makeColorRGB(248, 210, 16)
-//#define PURPLEY makeColorRGB(250, 38, 160)
-
-//friday:
-//#define REDY makeColorRGB(255, 0, 110)
-//#define BLUEY makeColorRGB(58, 134, 255)
-//#define GREENY makeColorRGB(12, 124, 89)
-//#define YELLOWY makeColorRGB(255, 190, 11)
-//#define PURPLEY makeColorRGB(131, 56, 236)
-
-//3rd:
-//#define REDY makeColorRGB(220, 0, 115)
-//#define BLUEY makeColorRGB(0, 139, 248)
-//#define GREENY makeColorRGB(151, 216, 178)
-//#define YELLOWY makeColorRGB(245, 238, 158)
-//#define PURPLEY makeColorRGB(83, 28, 179)
-
-//Playful:
-//#define REDY makeColorRGB(220, 0, 115)
-//#define BLUEY makeColorRGB(0, 139, 248)
-//#define GREENY makeColorRGB(137, 252, 0)
-//#define YELLOWY makeColorRGB(245, 183, 0)
-//#define PURPLEY makeColorRGB(84, 19, 136)
-
-//Dark scheme 1:
-//#define REDY makeColorRGB(154, 3, 30)
-//#define BLUEY makeColorRGB(25, 41, 124)
-//#define GREENY makeColorRGB(134, 186, 144)
-//#define YELLOWY makeColorRGB(245, 243, 187)
-//#define PURPLEY makeColorRGB(204, 75, 194)
-
-//
-//1:
-//#define REDY makeColorRGB(255, 84, 18)
-//#define BLUEY makeColorRGB(1, 222, 230)
-//#define GREENY makeColorRGB(168, 225, 12)
-//#define YELLOWY makeColorRGB(255, 219, 21)
-//#define PURPLEY makeColorRGB(138, 111, 223)
-
-//2:
-//#define REDY makeColorRGB(245, 23, 32)
-//#define BLUEY makeColorRGB(77, 179, 228)
-//#define GREENY makeColorRGB(0,255,0) 
-//#define YELLOWY makeColorRGB(251, 246, 8)
-//#define PURPLEY makeColorRGB(144, 104, 212)
-
-//3:
-//#define REDY makeColorRGB(255, 0, 110)
-//#define BLUEY makeColorRGB(0, 139, 248)
-//#define GREENY makeColorRGB(23, 235, 0)
-//#define YELLOWY makeColorRGB (255, 190, 11)
-//#define PURPLEY makeColorRGB(131, 56, 236)
-
-//4:
-// #define REDY makeColorRGB (255, 0, 60)
-// #define BLUEY makeColorRGB(0, 139, 248)
-// #define GREENY makeColorRGB(137, 252, 0)
-// #define YELLOWY makeColorRGB(245, 183, 0)
-// #define PURPLEY makeColorRGB (83, 28, 179)
-
-//#define REDY makeColorRGB(250,38,173)  //Hot Pink
-//#define BLUEY makeColorRGB(38,223,208) //Aqua
-//#define GREENY makeColorRGB(187,238,61) //Neon Green
-//#define YELLOWY makeColorRGB(246,208,48)// gold
-//#define PURPLEY makeColorRGB(186,111,223) // violet
-//#define REDY makeColorRGB(255,0,0)  //RED
-//#define BLUEY makeColorRGB(0,0,255) //BLUE
-//#define GREENY makeColorRGB(0,255,0) //GREEN
-//#define YELLOWY makeColorRGB(255,255,0)// YELLOW
-//#define PURPLEY makeColorRGB(255,0,255) // PURPLE
 Color colors[] = { REDY, BLUEY, GREENY };
 Color specialDisplay;
+Color popSpecialDisplay;
 byte currentColorIndex = 0;
 byte clickDim = 255;
 
@@ -188,7 +92,7 @@ void loop() {
     }
   }
 
-  //reset Crown & Bust Selection & switch to SETUP
+          //reset King Selection & switch to SETUP
   if (buttonDoubleClicked()){
     reset();
   }
@@ -251,6 +155,7 @@ void setupLoop() {
 
 void startLoop() {
   gamePhase = PLAY;
+//  randomizeClicksToKill();
   switch (currentColorIndex) {
   case 0:
     clicksToKill = random( 3 ) + 3;
@@ -312,6 +217,7 @@ void playLoop() {
     }
   }
 }
+
 
 //fortifySignals Logic -------
 void waitingLoop() {
@@ -378,7 +284,7 @@ void crownPopLoop() {
   }
   
   lastPopState = Crown;
-  specialDisplay = YELLOWY;
+  popSpecialDisplay = YELLOWY;
   
   popState = RESOLVE;
   //look for neighbors who have not moved to CROWN
@@ -402,7 +308,7 @@ void bustPopLoop() {
   }
 
   lastPopState = Bust;
-  specialDisplay = PURPLEY;
+  popSpecialDisplay = PURPLEY;
           
   popState = RESOLVE;
   //look for neighbors who have not moved to BUST
@@ -417,6 +323,7 @@ void bustPopLoop() {
 
 void resolvePopLoop() {
   popState = INERT;
+
     FOREACH_FACE(f) {
     if (!isValueReceivedOnFaceExpired(f)) {//a neighbor!
       if (getPopState(getLastValueReceivedOnFace(f)) == BUST || getPopState(getLastValueReceivedOnFace(f)) == CROWN) {
@@ -431,14 +338,15 @@ void displayFaceColor() {
   //default OFF to stop color lingering
   setColor(OFF);
 
+  if ( isCrown ){
+    specialDisplay = YELLOWY;
+  }
+  if ( isBust ){
+    specialDisplay = PURPLEY;
+  }
+      
   switch (gamePhase) {
     case SETUP:
-      if ( isCrown ){
-        specialDisplay = YELLOWY;
-      }
-      if ( isBust ){
-        specialDisplay = PURPLEY;
-      }
       if ( isCrown || isBust ){
         setColorOnFace(specialDisplay, 0);
         setColorOnFace(WHITE, 1);
@@ -455,7 +363,7 @@ void displayFaceColor() {
     //popping
       if(!balloonPoppedTimer.isExpired()) {
         getDisplayFaceGradual(balloonPoppedTimer, 15000);
-        //run 'on fire' color wheel pattern
+        //run color wheel pattern
         switch(currentColorIndex) {
           case 0:
             setColorOnFace(ORANGE,displayFaceI);
@@ -477,12 +385,6 @@ void displayFaceColor() {
       //popped
       else if ( popped ) {
         if (isCrown || isBust ) {
-          if ( isCrown ){
-            specialDisplay = YELLOWY;
-          }
-          else if ( isBust ){
-            specialDisplay = PURPLEY;
-          }        
           if(!fadePoppedSpecialTimer.isExpired()) {
             setColorOnFace(specialDisplay, 0);
             setColorOnFace(dim(WHITE,map(fadePoppedSpecialTimer.getRemaining(),0,6000,0,255)), 1);
@@ -510,16 +412,17 @@ void displayFaceColor() {
           }
         }
       }
-      
-    if( !specialPoppedNotificationTimer.isExpired() ) {
-      if( simpleIterateFaceTimer.isExpired() ){
-        simpleIterateFaceTimer.set(333);
-        simpleIterateFace ++;
+
+      //always running during PLAY
+      if( !specialPoppedNotificationTimer.isExpired() ) {
+        if( simpleIterateFaceTimer.isExpired() ){
+          simpleIterateFaceTimer.set(333);
+          simpleIterateFace ++;
+        }
+        setColorOnFace(dim(popSpecialDisplay,255),(3 + simpleIterateFace) % 6);
+        setColorOnFace(dim(WHITE,255),(4 + simpleIterateFace) % 6);
+        setColorOnFace(dim(popSpecialDisplay,255),(5 + simpleIterateFace) % 6);
       }
-      setColorOnFace(dim(specialDisplay,255),(3 + simpleIterateFace) % 6);
-      setColorOnFace(dim(WHITE,255),(4 + simpleIterateFace) % 6);
-      setColorOnFace(dim(specialDisplay,255),(5 + simpleIterateFace) % 6);
-    }
       break;
   }
 
@@ -547,6 +450,7 @@ byte reset(){
 }
 
 //timer/divisor closest to 1 is fastest, closer to 0 is slower
+//starts spinning fast and gradually slows until stopped
 int getDisplayFaceGradual(Timer timer, double divisor) {
   iterateFace = ((double) timer.getRemaining() / (double) divisor);
   cumulativeFace = cumulativeFace + iterateFace;
@@ -577,9 +481,13 @@ void displayHiddenBalloonHealth(){
 byte getGamePhase(byte data) {
     return ((data >> 4) & 3);//returns bits [A] [B]
 }
+
+
 byte getFortifySignal(byte data) {
     return ((data >> 2) & 3);//returns bits [C] [D]
 }
+
+
 byte getPopState(byte data) {
     return (data & 3);//returns bits [E] [F]
 }
