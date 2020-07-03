@@ -1,4 +1,4 @@
-![BattleBalloonsBanner](/images/battle-balloons-carnival-cover.pdf) 
+![BattleBalloonsBanner](/battle-balloons-cover.ai) 
 
 # Battle-Balloons
 for 6+ Blinks 
