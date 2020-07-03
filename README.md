@@ -1,4 +1,4 @@
-![BattleBalloonsBanner](/images/Battle Balloons landscape.jpg) 
+![BattleBalloonsBanner](/images/Balloons.jpg) 
 
 # Battle-Balloons
 for 6+ Blinks 
