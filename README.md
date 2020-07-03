@@ -5,7 +5,7 @@ for 6+ Blinks
 </br>for 2+ players 
 </br>  standard game is for 2 players because any more players could end up in ganging up on one unfortunate player
 
-You are captain of a hot air balloon fleet, trying to pop your opponent's Crown Balloon to emerge from battle victorious.  Navigate the airs of random chance and rely on strategic trickery to pop before you yourself are popped.
+While many summer festivals across the country are indefinitely postponed, you can still get your carnival fix with this limited time Summer Batch of Blinks!  Play vs your friends (multiplayer mode, agree on win conditions) or challenge the carnie at his own game (1 player mode, count # of turns to win).  Strike the balance between random chance and rely on strategic trickery to pop before you yourself are popped.
 
 More simply, the goal of the game is to pop the Balloon/Blink your opponent designated as Crown before they pop the Balloon/Blink you selected as your Crown.  Players take turns clicking their opponent's balloons to reduce balloon health and eventually pop them.  Watch out for any trap Bust Balloons!  Popping the Bust will cause you to lose immediately.  
 
